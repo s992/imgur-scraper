@@ -1,0 +1,13 @@
+{
+  "name": "imgur-scraper",
+  "version": "0.1",
+  "description": "Downloads images from an Imgur gallery.",
+  "main": "index.js",
+  "author": "Sean Walsh <sean@swalsh.org>",
+  "dependencies": {
+    "ineed": "^1.0.2",
+    "minimist": "^1.1.0",
+    "mkdirp": "^0.5.0",
+    "request": "^2.44.0"
+  }
+}
