@@ -8,6 +8,27 @@ var fs = require("fs"),
 var gallery = argv.g,
 	dir = path.resolve( argv.d || "downloads" );
 
+var formatGallery = function( gallery ) {
+
+	var layoutRegex = /\/layout\/(\w+)/i,
+		blogLayout = "/layout/blog",
+		urlParts;
+
+	if( !gallery.match( layoutRegex ) ) {
+
+		urlParts = gallery.split("#");
+		urlParts[ 0 ] += blogLayout;
+		
+		gallery = urlParts.join("#");
+
+	} else {
+		gallery = gallery.replace( layoutRegex, blogLayout );
+	}
+
+	return gallery;
+
+};
+
 var download = function( uri, filename, callback ) {
 	request( uri ).pipe( fs.createWriteStream( filename ) ).on( "close", callback );
 };
@@ -32,9 +53,21 @@ var grabImages = function( hrefs ) {
 
 if( gallery && dir ) {
 
+	gallery = formatGallery( gallery );
+
 	ineed.collect.hyperlinks.from( gallery, function( err, response, result ) {
 
 		var hrefs = [];
+
+		if( err || !result.hyperlinks.length ) {
+
+			console.error( "Unable to locate images at gallery: ");
+			console.error( "\t" + gallery );
+			console.error( "Please verify that the gallery is a valid Imgur gallery URL." );
+
+			return;
+
+		}
 
 		result.hyperlinks.forEach( function( link ) {
 
